@@ -1,0 +1,218 @@
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --correct-color: #27ae60;
+  --wrong-color: #e74c3c;
+  --warning-color: #f39c12;
+  --empty-color: #bdc3c7;
+  --detected-only-color: #9b59b6;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: #f5f6fa;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+h1 {
+    color: var(--primary-color);
+    text-align: center;
+}
+
+.tabs {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.tab {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  background: #ecf0f1;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.tab:hover {
+    background-color: #dfe6e9;
+}
+
+.tab.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.tab-content {
+  display: none;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.answer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
+  gap: 15px; 
+  margin-bottom: 20px;
+}
+
+.answer-item {
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+  background-color: #f8f9fa; 
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+}
+
+.answer-item label {
+    font-weight: bold;
+    min-width: 25px; 
+}
+
+select {
+  padding: 8px; 
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  flex-grow: 1; 
+}
+
+button {
+  background: var(--secondary-color);
+  color: white;
+  border: none;
+  padding: 12px 24px; 
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px; 
+  transition: opacity 0.3s;
+  margin-top: 10px; 
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+#answerForm button[type="submit"] {
+    display: block; 
+    width: 100%;
+    margin-top: 20px;
+}
+
+.camera-ui {
+  position: relative;
+  width: 100%;
+  max-width: 600px; 
+  margin: 20px auto; 
+  border: 1px dashed #bdc3c7; 
+  padding: 10px;
+  min-height: 200px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ecf0f1; 
+}
+
+#cameraPreview,
+#photoCanvas {
+  display: block; 
+  width: 100%;
+  height: auto;
+  max-height: 400px; 
+  margin-bottom: 10px; 
+}
+
+#captureBtn {
+    margin-top: 0; 
+}
+
+.hidden {
+  display: none !important; 
+}
+
+#comparisonResult {
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.result-item {
+  padding: 8px 12px; 
+  margin: 5px 0;
+  border-radius: 4px;
+  font-size: 14px;
+  border: 1px solid transparent; 
+}
+
+.result-item strong {
+    font-weight: bold;
+}
+
+.correct {
+  background-color: #d4edda; 
+  border-color: #c3e6cb;
+  color: #155724; 
+}
+
+.wrong {
+  background-color: #f8d7da; 
+  border-color: #f5c6cb;
+  color: #721c24; 
+}
+
+.not-detected {
+    background-color: #fff3cd; 
+    border-color: #ffeeba;
+    color: #856404; 
+}
+
+.only-detected {
+    background-color: #e2d9f3; 
+    border-color: #d6c7ec;
+    color: #442a73; 
+}
+
+.empty {
+    background-color: #e2e3e5; 
+    border-color: #d6d8db;
+    color: #383d41;
+}
+
+.installation-info {
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #eef1f5; 
+    border: 1px solid #d1d9e6;
+    border-radius: 6px;
+    font-size: 0.9em;
+}
+
+.installation-info h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+    font-size: 1.1em;
+}
+
+.installation-info ol {
+    padding-left: 20px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.installation-info li {
+    margin-bottom: 5px;
+}

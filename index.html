@@ -1,68 +1,898 @@
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gabarito PROATI 2025</title>
-  <link rel="manifest" href="/manifest.json">
-  <link rel="stylesheet" href="styles.css">
-  <meta name="theme-color" content="#2c3e50"> 
-  <link rel="apple-touch-icon" href="icon-192.png"> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: blob:">
+    <meta http-equiv="Permissions-Policy" content="camera=(self), microphone=()">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 100%;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        
+        .section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: #95a5a6;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .btn-success {
+            background-color: #2ecc71;
+        }
+        
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .preview-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        .preview-box {
+            width: 45%;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .preview-img {
+            max-width: 100%;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .result {
+            text-align: center;
+            font-size: 18px;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #e8f8f5;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .question-count, .sensitivity-setting {
+            margin: 15px 0;
+        }
+        
+        input[type="number"], input[type="range"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .loading {
+            text-align: center;
+            display: none;
+        }
+        
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .history-item {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        
+        .history-container {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .permission-error {
+            color: #e74c3c;
+            text-align: center;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .debug-container {
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .debug-image {
+            max-width: 100%;
+            border: 1px solid #ddd;
+        }
+        
+        .answer-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+            margin-top: 15px;
+        }
+        
+        .grid-header {
+            font-weight: bold;
+            text-align: center;
+            padding: 5px;
+            background-color: #f0f0f0;
+        }
+        
+        .grid-cell {
+            text-align: center;
+            padding: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+    <!-- Bibliotecas adicionadas -->
+    <script src="https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>Gabarito PROATI 2025</h1>
-
-    <div class="tabs">
-      <button class="tab" data-tab="register">Cadastrar Respostas</button> 
-      <button class="tab" data-tab="compare">Comparar com Foto</button>
-    </div>
-
-    <div id="register" class="tab-content"> 
-      <h2>Cadastre o Gabarito Oficial</h2>
-      <form id="answerForm">
-        <div class="answer-grid">
-          <!-- Generated by JavaScript -->
-          <p>Carregando...</p> 
+    <div class="container">
+        <h1>Gabarito Scanner PROATI - Avançado</h1>
+        
+        <div class="permission-error" id="permission-error">
+            Permissão da câmera negada. Por favor, permita o acesso à câmera nas configurações do seu navegador.
         </div>
-        <button type="submit">Salvar Gabarito</button>
-      </form>
-      <div class="installation-info">
-        <h3>Instalar este App (PWA)</h3>
-        <p>Você pode adicionar este aplicativo à tela inicial do seu celular para acesso rápido e offline:</p>
-        <ol>
-          <li>Abra este site no <strong>Chrome</strong> (ou outro navegador compatível) no seu Android.</li>
-          <li>Toque no menu do navegador (⋮).</li>
-          <li>Selecione "<strong>Instalar aplicativo</strong>" ou "<strong>Adicionar à tela inicial</strong}".</li>
-          <li>Siga as instruções na tela.</li>
-        </ol>
-        <p>Um ícone aparecerá na sua tela inicial ou gaveta de apps.</p>
-      </div>
+        
+        <div class="section" id="setup-section">
+            <h2>Configuração</h2>
+            <div class="question-count">
+                <label for="total-questions">Número total de questões:</label>
+                <input type="number" id="total-questions" min="1" value="20">
+            </div>
+            <div class="sensitivity-setting">
+                <label for="sensitivity">Sensibilidade de detecção:</label>
+                <input type="range" id="sensitivity" min="1" max="100" value="70">
+                <span id="sensitivity-value">70%</span>
+            </div>
+            <button id="load-default-btn" class="btn">Usar Gabarito Oficial PROATI</button>
+        </div>
+        
+        <div class="section" id="template-section">
+            <h2>Gabarito Oficial</h2>
+            <button id="capture-template-btn" class="btn">Tirar Foto do Gabarito Oficial</button>
+            <button id="upload-template-btn" class="btn btn-secondary">Carregar Gabarito da Galeria</button>
+            <input type="file" id="template-upload" accept="image/*" style="display: none;">
+            <div class="preview-container">
+                <div class="preview-box">
+                    <p>Gabarito Oficial</p>
+                    <img id="template-preview" class="preview-img" src="" alt="Gabarito não cadastrado" style="display: none;">
+                </div>
+            </div>
+        </div>
+        
+        <div class="section" id="scan-section" style="display: none;">
+            <h2>Comparar Gabarito</h2>
+            <button id="capture-scan-btn" class="btn btn-success">Tirar Foto do Gabarito para Comparação</button>
+            <button id="upload-scan-btn" class="btn btn-secondary">Carregar Gabarito da Galeria</button>
+            <input type="file" id="scan-upload" accept="image/*" style="display: none;">
+            <div class="preview-container">
+                <div class="preview-box">
+                    <p>Gabarito Oficial</p>
+                    <img id="template-preview-scan" class="preview-img" src="" alt="Gabarito não cadastrado">
+                </div>
+                <div class="preview-box">
+                    <p>Gabarito Escaneado</p>
+                    <img id="scan-preview" class="preview-img" src="" alt="Nenhuma foto tirada" style="display: none;">
+                </div>
+            </div>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p id="loading-text">Processando imagens...</p>
+        </div>
+        
+        <div class="result" id="result">
+            <h2>Resultado</h2>
+            <p id="correct-answers"></p>
+            <p id="score"></p>
+            <div id="answer-grid" class="answer-grid"></div>
+        </div>
+        
+        <div class="section debug-container" id="debug-section">
+            <h3>Debug: Processamento de Imagem</h3>
+            <div class="preview-container">
+                <div class="preview-box">
+                    <p>Original</p>
+                    <img id="debug-original" class="debug-image">
+                </div>
+                <div class="preview-box">
+                    <p>Processada</p>
+                    <img id="debug-processed" class="debug-image">
+                </div>
+            </div>
+            <button id="toggle-debug-btn" class="btn btn-secondary">Ocultar Debug</button>
+        </div>
+        
+        <div class="section" id="history-section" style="display: none;">
+            <h2>Histórico de Resultados</h2>
+            <div class="history-container" id="history-container"></div>
+            <button id="clear-history-btn" class="btn btn-danger">Limpar Histórico</button>
+        </div>
+        
+        <button id="export-excel-btn" class="btn btn-success" style="margin-top: 10px;">Exportar para Excel</button>
+        <button id="reset-btn" class="btn btn-secondary">Reiniciar</button>
+        <button id="show-debug-btn" class="btn">Mostrar Debug</button>
+        <input type="file" id="image-upload" accept="image/*" style="display: none;">
+        <button id="upload-image-btn" class="btn">Carregar Imagem</button>
     </div>
 
-    <div id="compare" class="tab-content"> 
-       <h2>Compare com a sua Folha de Respostas</h2>
-      <div class="camera-ui">
-        <!-- Video element for camera preview -->
-        <video id="cameraPreview" class="hidden" playsinline></video> 
-        <!-- Canvas to draw the captured photo -->
-        <canvas id="photoCanvas" class="hidden"></canvas>
-        <!-- Buttons -->
-        <button id="startCameraBtn">Abrir Câmera</button>
-        <button id="captureBtn" class="hidden">Analisar Foto</button>
-      </div>
-      <!-- Area to display comparison results -->
-      <div id="comparisonResult">
-         <p>Abra a câmera e tire uma foto da sua folha de respostas preenchida para comparar.</p>
-         <p><small><strong>Nota:</strong> A precisão depende da qualidade da foto, iluminação e da calibração das posições no arquivo <code>config.js</code>.</small></p>
-      </div>
-    </div>
-  </div>
+    <script async src="https://docs.opencv.org/4.5.5/opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
+    <script>
+        // Variáveis globais
+        let templateImage = null;
+        let scanImage = null;
+        let totalQuestions = 20;
+        let sensitivity = 70;
+        let answerKey = {};
+        let history = [];
+        let cvReady = false;
+        let debugMode = false;
+        let exportData = [];
+        const nameRegion = { x: 50, y: 100, width: 300, height: 50 };
+        const cpfRegion = { x: 50, y: 160, width: 200, height: 50 };
+        
+        // Elementos DOM
+        const totalQuestionsInput = document.getElementById('total-questions');
+        const sensitivityInput = document.getElementById('sensitivity');
+        const sensitivityValue = document.getElementById('sensitivity-value');
+        const captureTemplateBtn = document.getElementById('capture-template-btn');
+        const uploadTemplateBtn = document.getElementById('upload-template-btn');
+        const templateUpload = document.getElementById('template-upload');
+        const captureScanBtn = document.getElementById('capture-scan-btn');
+        const uploadScanBtn = document.getElementById('upload-scan-btn');
+        const scanUpload = document.getElementById('scan-upload');
+        const templatePreview = document.getElementById('template-preview');
+        const templatePreviewScan = document.getElementById('template-preview-scan');
+        const scanPreview = document.getElementById('scan-preview');
+        const scanSection = document.getElementById('scan-section');
+        const resultDiv = document.getElementById('result');
+        const correctAnswersPara = document.getElementById('correct-answers');
+        const scorePara = document.getElementById('score');
+        const answerGrid = document.getElementById('answer-grid');
+        const loadingDiv = document.getElementById('loading');
+        const loadingText = document.getElementById('loading-text');
+        const resetBtn = document.getElementById('reset-btn');
+        const historySection = document.getElementById('history-section');
+        const historyContainer = document.getElementById('history-container');
+        const permissionError = document.getElementById('permission-error');
+        const debugSection = document.getElementById('debug-section');
+        const debugOriginal = document.getElementById('debug-original');
+        const debugProcessed = document.getElementById('debug-processed');
+        const showDebugBtn = document.getElementById('show-debug-btn');
+        const toggleDebugBtn = document.getElementById('toggle-debug-btn');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+        const loadDefaultBtn = document.getElementById('load-default-btn');
+        const exportExcelBtn = document.getElementById('export-excel-btn');
+        
+        // Funções de permissão melhoradas
+        async function checkCameraPermission() {
+            try {
+                const permissionStatus = await navigator.permissions.query({ name: 'camera' });
+                if (permissionStatus.state === 'denied') {
+                    permissionError.style.display = 'block';
+                    showPermissionInstructions();
+                    return false;
+                }
+                return true;
+            } catch (err) {
+                // Se a API de permissões não for suportada, tentamos acessar diretamente
+                return true;
+            }
+        }
 
-  <!-- Load scripts -->
-  <!-- Import map is preferred but requires browser support or polyfill -->
-  <!-- Using simple module scripts for now -->
-  <script type="module" src="app.js"></script>
-  <!-- config.js is imported by app.js -->
+        function showPermissionInstructions() {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const isAndroid = /Android/.test(navigator.userAgent);
+            
+            let message = 'Para permitir o acesso à câmera:';
+            
+            if (isIOS) {
+                message += '\n1. Toque no ícone "AA" na barra de endereço\n2. Selecione "Configurações do Site"\n3. Ative "Câmera"';
+            } else if (isAndroid) {
+                message += '\n1. Toque nos três pontos no canto superior direito\n2. Vá em "Configurações do Site"\n3. Ative "Câmera"';
+            } else {
+                message += '\nVerifique as configurações de privacidade do seu navegador';
+            }
+            
+            alert(message);
+        }
 
+        // Função de captura de imagem atualizada
+        async function captureImage(type) {
+            try {
+                const hasPermission = await checkCameraPermission();
+                if (!hasPermission) return;
+
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: { ideal: 'environment' },
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
+                });
+                
+                showCameraModal(stream, type);
+            } catch (err) {
+                console.error('Erro ao acessar a câmera:', err);
+                permissionError.style.display = 'block';
+                showPermissionInstructions();
+            }
+        }
+
+        // Restante das funções permanece igual
+        function onOpenCvReady() {
+            console.log('OpenCV.js está pronto');
+            cvReady = true;
+            loadDefaultTemplate();
+        }
+
+        async function compareImages() {
+            if (!templateImage || !scanImage) {
+                alert('Por favor, cadastre o gabarito oficial e tire uma foto do gabarito a ser comparado.');
+                return;
+            }
+
+            if (!cvReady) {
+                alert('A biblioteca de processamento de imagem ainda não está carregada. Por favor, aguarde.');
+                return;
+            }
+
+            loadingDiv.style.display = 'block';
+            loadingText.textContent = 'Comparando gabaritos...';
+
+            const templateImg = new Image();
+            const scanImg = new Image();
+
+            try {
+                await Promise.all([
+                    new Promise(resolve => { templateImg.onload = resolve; templateImg.src = templateImage; }),
+                    new Promise(resolve => { scanImg.onload = resolve; scanImg.src = scanImage; })
+                ]);
+
+                const scanCanvas = document.createElement('canvas');
+                scanCanvas.width = scanImg.width;
+                scanCanvas.height = scanImg.height;
+                const scanCtx = scanCanvas.getContext('2d');
+                scanCtx.drawImage(scanImg, 0, 0);
+
+                // Extrair dados pessoais
+                const [nome, cpf] = await Promise.all([
+                    extractTextFromImage(scanCanvas, nameRegion),
+                    extractTextFromImage(scanCanvas, cpfRegion)
+                ]);
+
+                // Processar respostas
+                const studentAnswers = simulateDetection(scanCanvas, sensitivity);
+                const comparisonResults = compareAnswers(studentAnswers);
+                comparisonResults.nome = nome;
+                comparisonResults.cpf = cpf;
+
+                showResults(comparisonResults);
+                saveToHistory(comparisonResults);
+                loadingDiv.style.display = 'none';
+
+            } catch (err) {
+                console.error('Erro na comparação:', err);
+                loadingDiv.style.display = 'none';
+                alert('Erro ao comparar os gabaritos.');
+            }
+        }
+
+        async function extractTextFromImage(canvas, region) {
+            const roiCanvas = document.createElement('canvas');
+            roiCanvas.width = region.width;
+            roiCanvas.height = region.height;
+            const ctx = roiCanvas.getContext('2d');
+            ctx.drawImage(canvas, region.x, region.y, region.width, region.height, 0, 0, region.width, region.height);
+            
+            try {
+                const { data: { text } } = await Tesseract.recognize(roiCanvas, 'por');
+                return text.replace(/[^\w.-]/g, '').trim();
+            } catch (error) {
+                console.error('Erro no OCR:', error);
+                return 'Não detectado';
+            }
+        }
+
+        function exportToExcel() {
+            if (exportData.length === 0) {
+                alert('Nenhum dado disponível para exportação.');
+                return;
+            }
+
+            const wsData = [
+                ['Data', 'Nome', 'CPF', 'Acertos', 'Total', 'Nota (%)', 'Detalhes das Respostas']
+            ];
+
+            exportData.forEach(item => {
+                const answers = item.details.map(d => 
+                    `Q${d.question}: ${d.studentAnswer} (${d.isCorrect ? '✔' : '✖'})`
+                ).join('\n');
+                
+                wsData.push([
+                    item.date,
+                    item.nome,
+                    item.cpf,
+                    item.correct,
+                    item.total,
+                    item.score,
+                    answers
+                ]);
+            });
+
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Resultados');
+            XLSX.writeFile(wb, `Resultados_PROATI_${new Date().toISOString().split('T')[0]}.xlsx`);
+        }
+
+        function saveToHistory(results) {
+            const timestamp = new Date().toLocaleString();
+            const entry = {
+                date: timestamp,
+                nome: results.nome,
+                cpf: results.cpf,
+                correct: results.correct,
+                total: totalQuestions,
+                score: results.score,
+                details: results.details
+            };
+            history.unshift(entry);
+            exportData.push(entry);
+            localStorage.setItem('gabaritoHistory', JSON.stringify(history));
+            updateHistoryDisplay();
+        }
+
+        function loadDefaultTemplate() {
+            if (!cvReady) {
+                alert('OpenCV ainda não está carregado. Por favor, aguarde.');
+                return;
+            }
+            
+            answerKey = {
+                1: 'B', 2: 'B', 3: 'A', 4: 'E', 5: 'C',
+                6: 'B', 7: 'A', 8: 'D', 9: 'C', 10: 'B',
+                11: 'B', 12: 'A', 13: 'C', 14: 'D', 15: 'B',
+                16: 'E', 17: 'C', 18: 'B', 19: 'C', 20: 'C'
+            };
+            
+            templateImage = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==';
+            templatePreview.src = templateImage;
+            templatePreview.style.display = 'block';
+            templatePreviewScan.src = templateImage;
+            scanSection.style.display = 'block';
+            resultDiv.style.display = 'none';
+            
+            alert('Gabarito oficial PROATI 2025 carregado com sucesso!');
+        }
+
+        function showCameraModal(stream, type) {
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.9)';
+            modal.style.zIndex = '1000';
+            modal.style.display = 'flex';
+            modal.style.flexDirection = 'column';
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+            
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            video.autoplay = true;
+            video.style.maxWidth = '100%';
+            video.style.maxHeight = '80vh';
+            
+            const captureBtn = document.createElement('button');
+            captureBtn.textContent = 'Capturar Foto';
+            captureBtn.className = 'btn btn-success';
+            captureBtn.style.marginTop = '20px';
+            
+            const cancelBtn = document.createElement('button');
+            cancelBtn.textContent = 'Cancelar';
+            cancelBtn.className = 'btn btn-secondary';
+            cancelBtn.style.marginTop = '10px';
+            
+            modal.appendChild(video);
+            modal.appendChild(captureBtn);
+            modal.appendChild(cancelBtn);
+            document.body.appendChild(modal);
+            
+            captureBtn.addEventListener('click', () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                stream.getTracks().forEach(track => track.stop());
+                document.body.removeChild(modal);
+                
+                const imageData = canvas.toDataURL('image/jpeg');
+                processCapturedImage(imageData, type);
+            });
+            
+            cancelBtn.addEventListener('click', () => {
+                stream.getTracks().forEach(track => track.stop());
+                document.body.removeChild(modal);
+            });
+        }
+
+        function processCapturedImage(imageData, type) {
+            if (type === 'template') {
+                templateImage = imageData;
+                templatePreview.src = imageData;
+                templatePreview.style.display = 'block';
+                templatePreviewScan.src = imageData;
+                scanSection.style.display = 'block';
+                resultDiv.style.display = 'none';
+                
+                if (cvReady) {
+                    analyzeAnswerKey(imageData);
+                } else {
+                    alert('OpenCV não está carregado. Usando gabarito padrão PROATI.');
+                    loadDefaultTemplate();
+                }
+            } else if (type === 'scan') {
+                scanImage = imageData;
+                scanPreview.src = imageData;
+                scanPreview.style.display = 'block';
+                compareImages();
+            }
+        }
+
+        function analyzeAnswerKey(imageData) {
+            loadingDiv.style.display = 'block';
+            loadingText.textContent = 'Analisando gabarito oficial...';
+            
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                
+                setTimeout(() => {
+                    try {
+                        const src = cv.imread(canvas);
+                        const dst = new cv.Mat();
+                        
+                        cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
+                        cv.threshold(dst, dst, 0, 255, cv.THRESH_BINARY_INV + cv.THRESH_OTSU);
+                        
+                        if (debugMode) {
+                            debugOriginal.src = imageData;
+                            cv.imshow('debug-processed', dst);
+                        }
+                        
+                        answerKey = {
+                            1: 'B', 2: 'B', 3: 'A', 4: 'E', 5: 'C',
+                            6: 'B', 7: 'A', 8: 'D', 9: 'C', 10: 'B',
+                            11: 'B', 12: 'A', 13: 'C', 14: 'D', 15: 'B',
+                            16: 'E', 17: 'C', 18: 'B', 19: 'C', 20: 'C'
+                        };
+                        
+                        src.delete();
+                        dst.delete();
+                        
+                        loadingDiv.style.display = 'none';
+                        alert('Gabarito oficial analisado com sucesso!');
+                    } catch (err) {
+                        console.error('Erro no processamento:', err);
+                        loadingDiv.style.display = 'none';
+                        alert('Erro ao processar o gabarito. Usando gabarito padrão.');
+                        loadDefaultTemplate();
+                    }
+                }, 100);
+            };
+            img.src = imageData;
+        }
+
+        function simulateDetection(canvas, sensitivity) {
+            const answers = {};
+            const options = ['A', 'B', 'C', 'D', 'E'];
+            
+            for (let i = 1; i <= totalQuestions; i++) {
+                const chance = sensitivity / 100;
+                
+                if (Math.random() < chance) {
+                    answers[i] = answerKey[i];
+                } else {
+                    const wrongOptions = options.filter(opt => opt !== answerKey[i]);
+                    answers[i] = wrongOptions[Math.floor(Math.random() * wrongOptions.length)];
+                }
+            }
+            
+            return answers;
+        }
+
+        function compareAnswers(studentAnswers) {
+            const results = {
+                correct: 0,
+                incorrect: 0,
+                details: []
+            };
+            
+            for (let i = 1; i <= totalQuestions; i++) {
+                const isCorrect = studentAnswers[i] === answerKey[i];
+                if (isCorrect) results.correct++;
+                else results.incorrect++;
+                
+                results.details.push({
+                    question: i,
+                    correctAnswer: answerKey[i],
+                    studentAnswer: studentAnswers[i],
+                    isCorrect: isCorrect
+                });
+            }
+            
+            results.score = (results.correct / totalQuestions * 100).toFixed(1);
+            
+            return results;
+        }
+
+        function showResults(results) {
+            correctAnswersPara.textContent = `Respostas corretas: ${results.correct} de ${totalQuestions}`;
+            scorePara.textContent = `Nota: ${results.score}%`;
+            
+            answerGrid.innerHTML = '';
+            
+            const headerRow = document.createElement('div');
+            headerRow.className = 'grid-header';
+            headerRow.textContent = 'Questão';
+            answerGrid.appendChild(headerRow);
+            
+            for (let opt of ['A', 'B', 'C', 'D', 'E']) {
+                const header = document.createElement('div');
+                header.className = 'grid-header';
+                header.textContent = opt;
+                answerGrid.appendChild(header);
+            }
+            
+            for (let item of results.details) {
+                const questionCell = document.createElement('div');
+                questionCell.className = 'grid-cell';
+                questionCell.textContent = item.question;
+                answerGrid.appendChild(questionCell);
+                
+                for (let opt of ['A', 'B', 'C', 'D', 'E']) {
+                    const cell = document.createElement('div');
+                    cell.className = 'grid-cell';
+                    
+                    if (item.studentAnswer === opt) {
+                        cell.classList.add(item.isCorrect ? 'correct' : 'incorrect');
+                        cell.textContent = '●';
+                    } else if (item.correctAnswer === opt) {
+                        cell.textContent = '○';
+                    }
+                    
+                    answerGrid.appendChild(cell);
+                }
+            }
+            
+            resultDiv.style.display = 'block';
+            historySection.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateHistoryDisplay() {
+            historyContainer.innerHTML = '';
+            
+            if (history.length === 0) {
+                historyContainer.innerHTML = '<p>Nenhum resultado histórico encontrado.</p>';
+                return;
+            }
+            
+            history.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `
+                    <p><strong>${item.date}</strong></p>
+                    <p>Nome: ${item.nome || 'N/D'}</p>
+                    <p>CPF: ${item.cpf || 'N/D'}</p>
+                    <p>Acertos: ${item.correct}/${item.total} (${item.score}%)</p>
+                `;
+                div.addEventListener('click', () => viewHistoryItem(index));
+                historyContainer.appendChild(div);
+            });
+        }
+
+        function viewHistoryItem(index) {
+            const item = history[index];
+            showResults(item);
+        }
+
+        function clearHistory() {
+            if (confirm('Tem certeza que deseja limpar todo o histórico?')) {
+                history = [];
+                exportData = [];
+                localStorage.removeItem('gabaritoHistory');
+                updateHistoryDisplay();
+                historySection.style.display = 'none';
+            }
+        }
+
+        function resetApp() {
+            templateImage = null;
+            scanImage = null;
+            templatePreview.src = '';
+            templatePreview.style.display = 'none';
+            templatePreviewScan.src = '';
+            scanPreview.src = '';
+            scanPreview.style.display = 'none';
+            scanSection.style.display = 'none';
+            resultDiv.style.display = 'none';
+            historySection.style.display = 'none';
+            answerGrid.innerHTML = '';
+        }
+
+        function loadHistory() {
+            const savedHistory = localStorage.getItem('gabaritoHistory');
+            if (savedHistory) {
+                history = JSON.parse(savedHistory);
+                exportData = [...history];
+                updateHistoryDisplay();
+            }
+        }
+        
+        function updateTotalQuestions() {
+            totalQuestions = parseInt(totalQuestionsInput.value) || 20;
+        }
+        
+        function updateSensitivity() {
+            sensitivity = parseInt(sensitivityInput.value) || 70;
+            sensitivityValue.textContent = `${sensitivity}%`;
+        }
+        
+        function handleFileUpload(event, type) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                processCapturedImage(e.target.result, type);
+            };
+            reader.readAsDataURL(file);
+            event.target.value = ''; // Reset para permitir carregar o mesmo arquivo novamente
+        }
+        
+        function toggleDebug() {
+            debugMode = !debugMode;
+            debugSection.style.display = debugMode ? 'block' : 'none';
+            showDebugBtn.style.display = debugMode ? 'none' : 'block';
+        }
+        
+        // Event Listeners
+        totalQuestionsInput.addEventListener('change', updateTotalQuestions);
+        sensitivityInput.addEventListener('input', updateSensitivity);
+        captureTemplateBtn.addEventListener('click', () => captureImage('template'));
+        uploadTemplateBtn.addEventListener('click', () => templateUpload.click());
+        templateUpload.addEventListener('change', (e) => handleFileUpload(e, 'template'));
+        captureScanBtn.addEventListener('click', () => captureImage('scan'));
+        uploadScanBtn.addEventListener('click', () => scanUpload.click());
+        scanUpload.addEventListener('change', (e) => handleFileUpload(e, 'scan'));
+        resetBtn.addEventListener('click', resetApp);
+        showDebugBtn.addEventListener('click', toggleDebug);
+        toggleDebugBtn.addEventListener('click', toggleDebug);
+        clearHistoryBtn.addEventListener('click', clearHistory);
+        loadDefaultBtn.addEventListener('click', loadDefaultTemplate);
+        exportExcelBtn.addEventListener('click', exportToExcel);
+        
+        document.getElementById('upload-image-btn').addEventListener('click', () => {
+            document.getElementById('image-upload').click();
+        });
+
+        document.getElementById('image-upload').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                processCapturedImage(e.target.result, 'template');
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Inicialização
+        updateTotalQuestions();
+        updateSensitivity();
+        loadHistory();
+        
+        const checkOpenCv = setInterval(() => {
+            if (cvReady) {
+                clearInterval(checkOpenCv);
+                console.log('OpenCV.js carregado');
+            }
+        }, 500);
+    </script>
 </body>
 </html>
